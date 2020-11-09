@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -6,17 +7,31 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MyController
 
-    /**
-    * @Route("/lucky/number")
-    */
 
 {
+
+    /**
+     * @Route("/lucky/number")
+     */
     public function number(): Response
     {
         $number = random_int(0, 100);
 
         return new Response(
-            '<html><body>Lucky number: '.$number.'</body></html>'
+            '<html><body>Lucky number: ' . $number . '</body></html>'
+        );
+    }
+
+
+
+    /**
+     * @Route("/check_env")
+     */
+
+    public function enviroment(): Response
+    {
+        return new Response(
+            $_ENV['APP_ENV']
         );
     }
 
@@ -49,7 +64,7 @@ class MyController
 
 
         return new Response(
-            '<html><body>'.json_encode($myArray).'</body></html>'
+            '<html><body>' . json_encode($myArray) . '</body></html>'
         );
     }
 }
