@@ -519,5 +519,11 @@
     },
     "webmozart/assert": {
         "version": "1.9.1"
+    },
+    "yoanm/jsonrpc-server-sdk": {
+        "version": "v3.1.2"
+    },
+    "yoanm/symfony-jsonrpc-http-server": {
+        "version": "v3.0.2"
     }
 }
