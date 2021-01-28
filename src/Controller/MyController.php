@@ -7,8 +7,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MyController
 
-
 {
+    /**
+     * @Route("/mypage")
+     */
+    public function mypage(): Response
+    {
+        return new Response(
+            'This is prod'
+        );
+    }
+
 
     /**
      * @Route("/lucky/number")
@@ -23,7 +32,6 @@ class MyController
     }
 
 
-
     /**
      * @Route("/check_env")
      */
@@ -34,6 +42,7 @@ class MyController
             $_ENV['APP_ENV']
         );
     }
+
 
     public function show_all(): Response
     {
@@ -58,7 +67,7 @@ class MyController
             return new Response($conn->error);
         }
 
-        while ($row = $result->fetch_array()) {
+        while ($row = $result->fetch_assoc()) {
             $myArray[] = $row;
         }
 

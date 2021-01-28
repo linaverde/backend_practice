@@ -10,5 +10,17 @@ api_show_message:
   path: /api/all
   controller: App\Controller\MyController::show_all
 
+mypage:
+  path: /mypage
+  controller: App\Controller\MyController::mypage
+
+create_user:
+  path: /create_user
+  controller: App\Controller\UserController::create_user
+
+user:
+  path: /user
+  controller: App\Controller\UserController::index
+
 json-rpc-endpoint:
   resource: '@JsonRpcHttpServerBundle/Resources/config/routing/endpoint.xml'
