@@ -1,34 +1,85 @@
-name: PHP Composer
+name: CI
 
 on:
-  push:
-    branches: [ master ]
+  schedule:
+    - cron: 0 2 * * 1-5
   pull_request:
-    branches: [ master ]
+  push:
+    branches:
+      - master
 
 jobs:
-  build:
-
+  tests:
+    name: Tests PHP ${{ matrix.php }} ${{ matrix.dependency }} (Symfony ${{ matrix.symfony }})
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        php:
+          - '7.2'
+          - '7.3'
+          - '7.4'
+          - '8.0'
+        dependency:
+          - ''
+          - 'lowest'
+        symfony:
+          - '3.4.*'
+          - '4.4.*'
+          - '5.0.*'
+        exclude:
+          - php: '7.2'
+            symfony: '3.4.*'
+            dependency: 'lowest'
+          - php: '7.2'
+            symfony: '4.4.*'
+            dependency: 'lowest'
+          - php: '7.3'
+            symfony: '3.4.*'
+          - php: '7.3'
+            symfony: '4.4.*'
+          - php: '7.4'
+            symfony: '3.4.*'
+          - php: '7.4'
+            symfony: '4.4.*'
+          - php: '8.0'
+            symfony: '3.4.*'
+          - php: '8.0'
+            symfony: '4.4.*'
+      fail-fast: false
     steps:
-    - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v1
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v2
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: composer:v2, flex, pcov
 
-    - name: Install dependencies
-      if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Configure Symfony
+        run: composer config extra.symfony.require "${{ matrix.symfony }}"
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-    # - name: Run test suite
-    #   run: composer run-script test
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ matrix.php }}-composer-
+
+      - name: Update project dependencies
+        if: matrix.dependency == ''
+        run: composer update --no-progress --ansi --prefer-stable
+
+      - name: Update project dependencies lowest
+        if: matrix.dependency == 'lowest'
+        run: composer update --no-progress --ansi --prefer-stable --prefer-lowest
+
+      - name: Validate composer
+        run: composer validate --strict --no-check-lock
+
+      - name: Run tests
+        run: vendor/bin/phpunit
