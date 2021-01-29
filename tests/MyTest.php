@@ -14,6 +14,12 @@ class StackTest extends TestCase
     public function testNumber()
     {
         $controller = new MyController();
-        $this->assertFalse(is_null($controller->number()));
+        $this->assertTrue(is_int($controller->number()));
+    }
+
+    public function testMyPage()
+    {
+        $controller = new MyController();
+        $this->assertTrue(is_string($controller->mypage()));
     }
 }
