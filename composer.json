@@ -1,4 +1,6 @@
 {
+    "name": "symfony-project-test",
+    "description": "my-studying-app",
     "type": "project",
     "license": "proprietary",
     "require": {
