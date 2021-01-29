@@ -11,20 +11,24 @@ class MyController
     /**
      * @Route("/mypage")
      */
-    public function mypage(): string
+    public function mypage(): Response
     {
-        return 'This is my page';
+        return new Response(
+            'This is prod'
+        );
     }
 
 
     /**
      * @Route("/lucky/number")
      */
-    public function number(): int
+    public function number(): Response
     {
         $number = random_int(0, 100);
 
-        return $number;
+        return new Response(
+            '<html><body>Lucky number: ' . $number . '</body></html>'
+        );
     }
 
 
