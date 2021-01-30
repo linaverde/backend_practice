@@ -18,4 +18,7 @@ jobs:
           username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.DEPLOY_SERVER_PORT }}
-          script: whoami
+          script: |
+            cd /var/www/project_prod
+            git pull origin master
+          
